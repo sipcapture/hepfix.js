@@ -1,2 +1,20 @@
 # horaclifix.js
-IPFIX adapter for HOMER/HEP and Oracle SBCs
+IPFIX/SIPFIX adapter for HOMER/HEP and Oracle SBCs
+
+#### Status
+* work in progress
+
+## Install
+```
+npm install
+```
+
+## Run
+```
+nodejs horaclifix.js
+```
+
+## Test
+```
+echo -ne '\x00\x0A\x00\x30\x59\x41\x37\x38\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x20\x00\x01\x00\x02\x00\xFC\x77\x31\x00\x00\x00\x1E\x00\x00\x00\x00\x43\x5A\x07\x03\x00\x06\x65\x63\x7A\x37\x33\x30' | nc localhost 4739
+```
