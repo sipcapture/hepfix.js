@@ -20,7 +20,7 @@ echo -ne '\x00\x0A\x00\x30\x59\x41\x37\x38\x00\x00\x00\x00\x00\x00\x00\x00\x01\x
 ```
 
 ### Output
-```json
+```
 { version: 10,
   length: 48,
   exportTime: 1497446200,
