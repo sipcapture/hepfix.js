@@ -1,6 +1,8 @@
 # horaclifix.js
 IPFIX/SIPFIX adapter for HOMER/HEP and Oracle SBCs
 
+NodeJS port of https://github.com/negbie/horaclifix
+
 <img src="http://i.imgur.com/SUJ3UFJ.jpg?1" />
 
 #### Status
