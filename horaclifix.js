@@ -18,15 +18,31 @@ var sipfix = require('./sipfix.js')
 var server = net.createServer(function (socket) {
     // socket.setEncoding(null);
     socket.on('data', function (data) {
-	var result = sipfix.readHandshake(data);
-	console.log('GOT FIX: ',result);
+	var result = sipfix.readHeader(data);
+	console.log('GOT FIX ID: ',result.setId);
 	if (result.setId == 256) {
-		result.setId++
-		console.log('Replying with ID: '+result.setId);
-		socket.write(sipfix.writeHandshake(result) );
+		var shake = sipfix.readHandshake(data);
+		shake.setId++
+		console.log('Replying with ID: '+shake.setId);
+		socket.write(sipfix.writeHandshake(shake) );
+	} else if (result.setId === 258) {
+		var sip = sipfix.readIn(data);
+		if (sip) {
+			console.log('GOT',sip);
+			// console.log('Type Received: ',sip.msg);
+		}
+	} else if (result.setId === 259) {
+		var sip = sipfix.readOut(data);
+		if (sip) {
+			console.log('GOT',sip);
+			// console.log('Type Received: ',sip.msg);
+		}
+	} else {
+		console.log('Invalid/Unsupported Type');
+		console.log('DEBUG:',result);
 	}
     });
 })
 .listen(4739);
 
-console.log('HORACLIFIX Starting...');
+console.log('HORACLIFIX.js Listening...');
