@@ -1,9 +1,9 @@
+<img src="http://i.imgur.com/SUJ3UFJ.jpg?1" height="50px" /><img src="https://avatars2.githubusercontent.com/u/6690913?v=3&s=400" height="50px" />
+
 # horaclifix.js
-IPFIX/SIPFIX adapter for HOMER/HEP and Oracle SBCs
+IPFIX/SIPFIX to HOMER/HEP  adapter for Oracle SBCs
 
 NodeJS port of https://github.com/negbie/horaclifix
-
-<img src="http://i.imgur.com/SUJ3UFJ.jpg?1" />
 
 #### Status
 * work in progress
