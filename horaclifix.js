@@ -8,6 +8,20 @@
 var net = require('net');
 var sipfix = require('./sipfix.js')
 
+console.log("Press CTRL-C to Exit...");
+
+var config = require('./config.js');
+
+if (config.hep_config) {
+  var hep_client = require('./hep-client.js');
+  hep_client.init(config.hep_config);
+}
+else {
+  console.log('Must provide HEP configuration');
+  exit;
+}
+
+
 // TEST:
 // echo -ne '\x00\x0A\x00\x30\x59\x41\x37\x38\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x20\x00\x01\x00\x02\x00\xFC\x77\x31\x00\x00\x00\x1E\x00\x00\x00\x00\x43\x5A\x07\x03\x00\x06\x65\x63\x7A\x37\x33\x30' | nc localhost 4739
 
@@ -43,6 +57,6 @@ var server = net.createServer(function (socket) {
 	}
     });
 })
-.listen(4739);
+.listen(config.ipfix_config ? config.ipfix_config.IPFIX_PORT : 4739);
 
 console.log('HORACLIFIX.js Listening...');
