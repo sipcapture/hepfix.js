@@ -28,6 +28,6 @@
   "author": "Lorenzo Mangani <lorenzo.mangani@gmail.com> (http://sipcapture.org/)",
   "license": "MIT",
   "dependencies": {
-    "binary-protocol": "*",
+    "restructure": "*"
   }
 }

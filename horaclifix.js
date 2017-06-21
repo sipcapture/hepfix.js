@@ -5,9 +5,6 @@
    *****************************
 */
 
-// Proto Buffers
-var Protocol = require('binary-protocol');
-var protocol = new Protocol();
 var net = require('net');
 var sipfix = require('./sipfix.js')
 
@@ -19,20 +16,21 @@ var server = net.createServer(function (socket) {
     // socket.setEncoding(null);
     socket.on('data', function (data) {
 	var result = sipfix.readHeader(data);
-	console.log('GOT FIX ID: ',result.setId);
-	if (result.setId == 256) {
+	console.log('GOT FIX ID: ',result.SetID);
+	if (result.SetID == 256) {
 		var shake = sipfix.readHandshake(data);
-		shake.setId++
-		console.log('Replying with ID: '+shake.setId);
+		shake.SetID++
+		console.log('Replying with ID: '+shake.SetID);
+		console.log(sipfix.writeHandshake(shake) );
 		socket.write(sipfix.writeHandshake(shake) );
-	} else if (result.setId === 258) {
-		var sip = sipfix.readIn(data);
+	} else if (result.SetID === 258) {
+		var sip = sipfix.SipIn(data);
 		if (sip) {
 			console.log('GOT',sip);
 			// console.log('Type Received: ',sip.msg);
 		}
-	} else if (result.setId === 259) {
-		var sip = sipfix.readOut(data);
+	} else if (result.SetID === 259) {
+		var sip = sipfix.SipOut(data);
 		if (sip) {
 			console.log('GOT',sip);
 			// console.log('Type Received: ',sip.msg);

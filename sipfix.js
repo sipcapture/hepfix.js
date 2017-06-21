@@ -1,243 +1,143 @@
 // SIPFIX Functions
+var r = require('restructure');
 
-var Protocol = require('binary-protocol');
-var protocol = new Protocol();
 
-// Functions
+// Structs
 
-// Handshake Parsing
-protocol.define('Bytes', {
-  read: function (propertyName) {
-    this
-    .pushStack({length: null, value: null}) // allocate a new object to read the data into. 
-    .Int8('length') // read a 32 bit integer into the `length` property. 
-    .tap(function (data) {
-      if (data.length === -1) {
-        // if the length is -1, then there are no bytes and the value is null. 
-        data.value = null;
-        return;
-      }
-      this.raw('value', data.length); // read N bytes into a property called `value` 
-    })
-    .popStack(propertyName, function (data) {
-      // pop the interim value off the stack and insert the real value into `propertyName` 
-      return data.value;
-    });
-  },
-  write: function (value) {
-    if (value === null) {
-      this.Int8(-1); // a length of -1 indicates a null value. 
-    }
-    else {
-      // value is a buffer 
-      this
-      .Int8(value.length) // write the buffer length 
-      .raw(value); // write the raw buffer 
-    }
-  }
+var Header = new r.Struct({
+  Version: 	r.uint16,
+  Length: 	r.uint16,
+  ExportTime: 	r.uint32,
+  SeqNum: 	r.uint32,
+  ObservationID: r.uint32,
+  SetID: 	r.uint16,
+  SetLen: 	r.uint16
 });
 
-protocol.define('String', {
-  read: function (propertyName) {
-    this
-    .Bytes(propertyName) // read `Bytes` into the property name. 
-    .collect(function (data) {
-      // collect the final data to return 
-      if (data[propertyName] !== null) {
-        data[propertyName] = data[propertyName].toString('utf8');
-      }
-      return data;
-    });
-  },
-  write: function (value) {
-    this.Bytes(new Buffer(value, 'utf8'));
-  }
+var HandShake = new r.Struct({
+  Version: 	r.uint16,
+  Length: 	r.uint16,
+  ExportTime: 	r.uint32,
+  SeqNum: 	r.uint32,
+  ObservationID: r.uint32,
+  SetID: 	r.uint16,
+  SetLen: 	r.uint16,
+  MaVer:	r.uint16,
+  MiVer:	r.uint16,
+  CFlags1:	r.uint16,
+  CFlags1:	r.uint16,
+  SFlags:	r.uint16,
+  Timeout:	r.uint16,
+  SystemID:	r.uint32,
+  Product:	r.uint16,
+  Major:	r.uint8,
+  Minor:	r.uint8,
+  Revision:	r.uint8,
+  HostnameLen:	r.uint8,
+  Hostname:	new r.String('HostnameLen', 'utf8')
 });
 
-// SIP Parsing
 
-protocol.define('LongMsg', {
-  read: function (propertyName) {
-    this
-    .pushStack({length: null, value: null}) // allocate a new object to read the data into. 
-    .Int16BE('length')
-    .tap(function (data) {
-      if (data.length === -1 ) {
-        // if the length is -1, then there are no bytes and the value is null. 
-        data.value = null;
-        return;
-      } else {
-        return this.raw('value', data.length); // read N bytes into a property called `value` 
-      }
-    })
-    .popStack(propertyName, function (data) {
-      // pop the interim value off the stack and insert the real value into `propertyName` 
-      return data.value;
-    });
-  },
-  write: function (value) {
-    if (value === null) {
-      this.Int16BE(-1); // a length of -1 indicates a null value. 
-    }
-    else {
-      // value is a buffer 
-      this
-      .Int16BE(value.length) // write the buffer length 
-      .raw(value); // write the raw buffer 
-    }
-  }
+var SipOut = new r.Struct({
+  Version: 	r.uint16,
+  Length: 	r.uint16,
+  ExportTime: 	r.uint32,
+  SeqNum: 	r.uint32,
+  ObservationID: r.uint32,
+  SetID: 	r.uint16,
+  SetLen: 	r.uint16,
+  TimeSec:	r.uint32,
+  TimeMic:	r.uint32,
+  IntSlot:	r.uint8,
+  IntPort:	r.uint8,
+  IntVlan:	r.uint16,
+  CallIDLen:	r.uint8,
+  CallID:	new r.String('CallIDLen', 'utf8'),
+  CallIDEnd:	r.uint8,
+  IPlen:	r.uint16,
+  VLan:		r.uint8,
+  Tos:		r.uint8,
+  Tlen:		r.uint16,
+  TID:		r.uint16,
+  TFlags:	r.uint16,
+  TTL:		r.uint8,
+  TProto:	r.uint8,
+  TPos:		r.uint16,
+  SrcIP:	r.uint32,
+  DstIP:	r.uint32,
+  DstPort:	r.uint16,
+  SrcPort:	r.uint16,
+  UDPLen:	r.uint16,
+  SipMsgLen:	r.uint16,
+  SipMsg:	new r.String('SipMsgLen', 'utf8')
 });
 
-protocol.define('SipString', {
-  read: function (propertyName) {
-    this
-    .LongMsg(propertyName)
-    .collect(function (data) {
-      // collect the final data to return 
-      if (data[propertyName] !== null) {
-        data[propertyName] = data[propertyName].toString('utf8');
-      }
-      return data;
-    });
-  },
-  write: function (value) {
-    this.Bytes(new Buffer(value, 'utf8'));
-  }
+var SipIn = new r.Struct({
+  Version: 	r.uint16,
+  Length: 	r.uint16,
+  ExportTime: 	r.uint32,
+  SeqNum: 	r.uint32,
+  ObservationID: r.uint32,
+  SetID: 	r.uint16,
+  SetLen: 	r.uint16,
+  TimeSec:	r.uint32,
+  TimeMic:	r.uint32,
+  IntSlot:	r.uint8,
+  IntPort:	r.uint8,
+  IntVlan:	r.uint16,
+  CallIDEnd:	r.uint8,
+  IPlen:	r.uint16,
+  VLan:		r.uint8,
+  Tos:		r.uint8,
+  Tlen:		r.uint16,
+  TID:		r.uint16,
+  TFlags:	r.uint16,
+  TTL:		r.uint8,
+  TProto:	r.uint8,
+  TPos:		r.uint16,
+  SrcIP:	r.uint32,
+  DstIP:	r.uint32,
+  DstPort:	r.uint16,
+  SrcPort:	r.uint16,
+  UDPLen:	r.uint16,
+  SipMsgLen:	r.uint16,
+  SipMsg:	new r.String('SipMsgLen', 'utf8')
 });
+
+
 
 // Exports
 
-exports.version = "1.0.0";
+exports.version = "1.0.1";
 
 exports.readHeader = function(buffer){
-	var reader = protocol.createReader(buffer)
-        	.Int16BE('version')
-        	.Int16BE('length')
-        	.Int32BE('exportTime')
-        	.Int32BE('seqNum')
-        	.Int32BE('observationId')
+	var stream = new r.DecodeStream(buffer);
+	return Header.decode(stream);
+}
 
-        	.Int16BE('setId')
-        	.Int16BE('setLen')
-        	return reader.next();
+exports.writeHeader = function(result){
+	var stream = new r.EncodeStream();
+	Header.encode(stream, result);
+	return stream.buffer;
 }
 
 exports.readHandshake = function(buffer){
-	var reader = protocol.createReader(buffer)
-        	.Int16BE('version')
-        	.Int16BE('length')
-        	.Int32BE('exportTime')
-        	.Int32BE('seqNum')
-        	.Int32BE('observationId')
-
-        	.Int16BE('setId')
-        	.Int16BE('setLen')
-
-        	.Int16BE('maVer')
-        	.Int16BE('miVer')
-        	.Int16BE('cFlags1')
-        	.Int16BE('cFlags2')
-        	.Int16BE('sFlags')
-        	.Int16BE('timeout')
-        	.Int32BE('systemId')
-        	.Int16BE('product')
-        	.Int8('sMaVer')
-        	.Int8('sMiVer')
-        	.Int8('revision')
-        	.String('hostname');
-        	return reader.next();
+	var stream = new r.DecodeStream(buffer);
+	return HandShake.decode(stream);
 }
 
 exports.writeHandshake = function(result){
-	var writer = protocol.createWriter();
-        writer
-                .Int16BE(result.version)
-                .Int16BE(result.length)
-                .Int32BE(result.exportTime)
-                .Int32BE(result.seqNum)
-                .Int32BE(result.observationId)
-                .Int16BE(result.setId)
-                .Int16BE(result.setLen)
-                .Int16BE(result.maVer)
-                .Int16BE(result.miVer)
-                .Int16BE(result.cFlags1)
-                .Int16BE(result.cFlags2)
-                .Int16BE(result.sFlags)
-                .Int16BE(result.timeout)
-                .Int32BE(result.systemId)
-                .Int16BE(result.product)
-                .Int8(result.sMaVer)
-                .Int8(result.sMiVer)
-                .Int8(result.revision)
-	        .String(result.hostname);
-	return writer.buffer;
+	var stream = new r.EncodeStream();
+	HandShake.encode(stream, result);
+	return stream.buffer;
 }
 
-exports.readIn = function(buffer){
-	var reader = protocol.createReader(buffer)
-        	.Int16BE('version')
-        	.Int16BE('length')
-        	.Int32BE('exportTime')
-        	.Int32BE('seqNum')
-        	.Int32BE('observationId')
-        	.Int16BE('setId')
-        	.Int16BE('setLen')
-
-        	.Int32BE('timeSec')
-        	.Int32BE('timeMic')
-        	.Int8('intSlot')
-        	.Int8('intPort')
-        	.Int16BE('intVlan')
-
-        	.String('callId')
-
-        	.Int32BE('srcIp')
-        	.Int32BE('dstIp')
-        	.Int16BE('dstPort')
-        	.Int16BE('srcPort')
-
-        	.Int16BE('UDPlen')
-       // 	.Int16BE('msgLen')
-        	.SipString('msg');
-        	return reader.next();
+exports.SipIn = function(buffer){
+	var stream = new r.DecodeStream(buffer);
+	return SipIn.decode(stream);
 }
 
-exports.readOut = function(buffer){
-	var reader = protocol.createReader(buffer)
-        	.Int16BE('version')
-        	.Int16BE('length')
-        	.Int32BE('exportTime')
-        	.Int32BE('seqNum')
-        	.Int32BE('observationId')
-        	.Int16BE('setId')
-        	.Int16BE('setLen')
-
-        	.Int32BE('timeSec')
-        	.Int32BE('timeMic')
-        	.Int8('intSlot')
-        	.Int8('intPort')
-        	.Int16BE('intVlan')
-
-        	.String('callId')
-		// .Int8('cidEnd')
-
-        	.Int16BE('ipLen')
-        	.Int8('vl')
-        	.Int8('tos')
-        	.Int16BE('tLen')
-        	.Int16BE('tId')
-        	.Int16BE('tFlags')
-        	.Int8('ttl')
-        	.Int8('tProto')
-        	.Int16BE('tPos')
-
-        	.Int32BE('srcIp')
-        	.Int32BE('dstIp')
-
-        	.Int16BE('dstPort')
-        	.Int16BE('srcPort')
-        	.Int16BE('UDPlen')
-       		// .Int16BE('msgLen')
-        	.SipString('msg');
-        	return reader.next();
+exports.SipOut = function(buffer){
+	var stream = new r.DecodeStream(buffer);
+	return SipOut.decode(stream);
 }
