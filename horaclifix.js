@@ -16,28 +16,30 @@ var server = net.createServer(function (socket) {
     // socket.setEncoding(null);
     socket.on('data', function (data) {
 	var result = sipfix.readHeader(data);
-	console.log('GOT FIX ID: ',result.SetID);
 	if (result.SetID == 256) {
+		console.log('GOT HANDSHAKE ID: ',result.SetID);
 		var shake = sipfix.readHandshake(data);
 		shake.SetID++
-		console.log('Replying with ID: '+shake.SetID);
-		console.log(sipfix.writeHandshake(shake) );
+		console.log('REPLYING WITH ID: '+shake.SetID);
 		socket.write(sipfix.writeHandshake(shake) );
 	} else if (result.SetID === 258) {
 		var sip = sipfix.SipIn(data);
 		if (sip) {
-			console.log('GOT',sip);
+			console.log(sip.SipMsg.toString() );
 			// console.log('Type Received: ',sip.msg);
 		}
 	} else if (result.SetID === 259) {
 		var sip = sipfix.SipOut(data);
 		if (sip) {
-			console.log('GOT',sip);
+			console.log(sip.SipMsg.toString() );
 			// console.log('Type Received: ',sip.msg);
 		}
+	} else if (result.SetID === 0) {
+			//Keep-Alive?
+			return;
 	} else {
-		console.log('Invalid/Unsupported Type');
-		console.log('DEBUG:',result);
+		console.log('Invalid/Unsupported Type: ',result.setID );
+		// console.log('DEBUG:',result);
 	}
     });
 })
