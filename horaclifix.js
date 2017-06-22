@@ -39,12 +39,21 @@ var server = net.createServer(function (socket) {
 	} else if (result.SetID === 258) {
 		var sip = sipfix.SipIn(data);
 		if (sip) {
+			sip.SrcIP = sip.SrcIP.join('.');
+			sip.DstIP = sip.DstIP.join('.');
+
 			console.log(sip.SipMsg.toString() );
 			// console.log('Type Received: ',sip.msg);
 		}
 	} else if (result.SetID === 259) {
 		var sip = sipfix.SipOut(data);
 		if (sip) {
+			sip.SrcIP = sip.SrcIP.join('.');
+			sip.DstIP = sip.DstIP.join('.');
+
+			var test = sip.SipMsg.split('\r\n\r\n');
+			console.log(test,sip);
+
 			console.log(sip.SipMsg.toString() );
 			// console.log('Type Received: ',sip.msg);
 		}
@@ -60,3 +69,19 @@ var server = net.createServer(function (socket) {
 .listen(config.ipfix_config ? config.ipfix_config.IPFIX_PORT : 4739);
 
 console.log('HORACLIFIX.js Listening...');
+
+var exit = false;
+process.on('SIGINT', function() {
+  console.log();
+  console.log('Stats:', hep_client.getStats());
+  if (exit) {
+    console.log("Exiting...");
+    process.exit();
+  } else {
+    console.log("Press CTRL-C within 2 seconds to Exit...");
+    exit = true;
+    setTimeout(function () {
+      exit = false;
+    }, 2000)
+  }
+});

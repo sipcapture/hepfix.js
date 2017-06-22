@@ -28,6 +28,27 @@ module.exports = {
     socket = dgram.createSocket("udp4");
     socket = getSocket('udp4'); 
   },
+  rcinfo:function(message) {
+        var rc = {
+          rcinfo: {
+            type: 'HEP',
+            version: 3,
+            payload_type: 'SIP',
+            captureId: hep_id,
+            capturePass: hep_pass,
+            ip_family: 2,
+            protocol: 17,
+            proto_type: 1,
+            srcIp: message.SrcIP,
+            dstIp: message.DstIP,
+            srcPort: message.SrcPort,
+            dstPort: message.DstPort,
+            correlation_id: message.CallID ? message.CallID : ''
+          },
+          payload: message.SipMsg
+        };
+	return rc;
+  },
   preHep:function(message) {
     var rcinfo = message.rcinfo;
     var msg = message.payload;

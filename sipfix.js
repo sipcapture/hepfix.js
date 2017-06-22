@@ -1,6 +1,11 @@
+/*
+ IPFIX Parser for ACME types
+ (c) 2017 QXIP BV
+ Author: L. Mangani
+*/
+
 // SIPFIX Functions
 var r = require('restructure');
-
 
 // Structs
 
@@ -63,8 +68,10 @@ var SipOut = new r.Struct({
   TTL:		r.uint8,
   TProto:	r.uint8,
   TPos:		r.uint16,
-  SrcIP:	r.uint32,
-  DstIP:	r.uint32,
+//  SrcIP:	r.uint32,
+//  DstIP:	r.uint32,
+  SrcIP:	new r.Array(r.uint8, 4),
+  DstIP:	new r.Array(r.uint8, 4),
   DstPort:	r.uint16,
   SrcPort:	r.uint16,
   UDPLen:	r.uint16,
@@ -95,8 +102,10 @@ var SipIn = new r.Struct({
   TTL:		r.uint8,
   TProto:	r.uint8,
   TPos:		r.uint16,
-  SrcIP:	r.uint32,
-  DstIP:	r.uint32,
+//  SrcIP:	r.uint32,
+//  DstIP:	r.uint32,
+  SrcIP:	new r.Array(r.uint8, 4),
+  DstIP:	new r.Array(r.uint8, 4),
   DstPort:	r.uint16,
   SrcPort:	r.uint16,
   UDPLen:	r.uint16,
