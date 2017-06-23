@@ -29,6 +29,7 @@ else {
 var server = net.createServer(function (socket) {
     // socket.setEncoding(null);
     socket.on('data', function (data) {
+	var dlen = data.byteLength;
 	var result = sipfix.readHeader(data);
 	if (result.SetID == 256) {
 		console.log('GOT HANDSHAKE ID: ',result.SetID);
@@ -37,25 +38,75 @@ var server = net.createServer(function (socket) {
 		console.log('REPLYING WITH ID: '+shake.SetID);
 		socket.write(sipfix.writeHandshake(shake) );
 	} else if (result.SetID === 258) {
-		var sip = sipfix.SipIn(data);
-		if (sip) {
-			sip.SrcIP = sip.SrcIP.join('.');
-			sip.DstIP = sip.DstIP.join('.');
+		if (dlen > result.Length ) {
+			console.log('258: MULTI-MESSAGE');
+			console.log("Header length: "+result.Length+" < Packet length: "+dlen);
 
-			console.log(sip.SipMsg.toString() );
-			// console.log('Type Received: ',sip.msg);
+			var sip = sipfix.SipOut(data);
+			var test = unescape(sip.SipMsg).split('\r\n\r\n');
+
+			var i = result.Length;
+			var x = 0;
+			var n = dlen;
+
+			test.forEach(function(slice,i){
+				  slice = slice+'\r\n\r\n';
+				  if (i<1) console.log(slice); return;
+
+				  var tmp = new Buffer(slice);
+				  console.log(sipfix.SubSipOut(tmp));
+			  	  console.log( tmp.toString('utf8', n, slice.length) );
+					n = n - slice.length;
+			});
+
+		} else {
+			console.log('258: SINGLE-MESSAGE');
+			var sip = sipfix.SipIn(data);
+			if (sip) {
+				sip.SrcIP = sip.SrcIP.join('.');
+				sip.DstIP = sip.DstIP.join('.');
+				console.log(sip.SipMsg.toString() );
+				// console.log('Type Received: ',sip.msg);
+			}
 		}
+
 	} else if (result.SetID === 259) {
-		var sip = sipfix.SipOut(data);
-		if (sip) {
-			sip.SrcIP = sip.SrcIP.join('.');
-			sip.DstIP = sip.DstIP.join('.');
+		if (dlen > result.Length ) {
+			console.log('259: MULTI-MESSAGE');
+			console.log("Header length: "+result.Length+" < Packet length: "+dlen);
 
-			var test = sip.SipMsg.split('\r\n\r\n');
-			console.log(test,sip);
+			var sip = sipfix.SipOut(data);
+			var test = unescape(sip.SipMsg).split('\r\n\r\n');
 
-			console.log(sip.SipMsg.toString() );
-			// console.log('Type Received: ',sip.msg);
+			var i = result.Length;
+			var x = 0;
+			var n = dlen;
+
+			test.forEach(function(slice,i){
+				  slice = slice+'\r\n\r\n';
+				  if (i<1) console.log(slice); return;
+
+				  var tmp = new Buffer(slice);
+				  console.log(sipfix.SubSipOut(tmp));
+			  	  console.log( tmp.toString('utf8', n, slice.length) );
+					n = n - slice.length;
+			});
+
+		} else {
+
+			console.log('259: SINGLE-MESSAGE');
+			var sip = sipfix.SipOut(data);
+			if (sip) {
+				sip.SrcIP = sip.SrcIP.join('.');
+				sip.DstIP = sip.DstIP.join('.');
+
+				// console.log(sip);
+
+				// var test = sip.SipMsg.toString().replace(/[\uE000-\uF8FF]/g, '');
+
+				// console.log(sip.SipMsg.toString() );
+				// console.log('Type Received: ',sip.msg);
+		   	}
 		}
 	} else if (result.SetID === 0) {
 			//Keep-Alive?
