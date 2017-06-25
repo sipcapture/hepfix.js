@@ -68,35 +68,6 @@ var SipOut = new r.Struct({
   TTL:		r.uint8,
   TProto:	r.uint8,
   TPos:		r.uint16,
-//  SrcIP:	r.uint32,
-//  DstIP:	r.uint32,
-  SrcIP:	new r.Array(r.uint8, 4),
-  DstIP:	new r.Array(r.uint8, 4),
-  DstPort:	r.uint16,
-  SrcPort:	r.uint16,
-  UDPLen:	r.uint16,
-  SipMsgLen:	r.uint16,
-  SipMsg:	new r.String('SipMsgLen', 'utf8')
-});
-
-var SubSipOut = new r.Struct({
-  TimeSec:	r.uint32,
-  TimeMic:	r.uint32,
-  IntSlot:	r.uint8,
-  IntPort:	r.uint8,
-  IntVlan:	r.uint16,
-  CallIDLen:	r.uint8,
-  CallID:	new r.String('CallIDLen', 'utf8'),
-  CallIDEnd:	r.uint8,
-  IPlen:	r.uint16,
-  VLan:		r.uint8,
-  Tos:		r.uint8,
-  Tlen:		r.uint16,
-  TID:		r.uint16,
-  TFlags:	r.uint16,
-  TTL:		r.uint8,
-  TProto:	r.uint8,
-  TPos:		r.uint16,
   SrcIP:	new r.Array(r.uint8, 4),
   DstIP:	new r.Array(r.uint8, 4),
   DstPort:	r.uint16,
@@ -129,8 +100,6 @@ var SipIn = new r.Struct({
   TTL:		r.uint8,
   TProto:	r.uint8,
   TPos:		r.uint16,
-//  SrcIP:	r.uint32,
-//  DstIP:	r.uint32,
   SrcIP:	new r.Array(r.uint8, 4),
   DstIP:	new r.Array(r.uint8, 4),
   DstPort:	r.uint16,
@@ -139,8 +108,6 @@ var SipIn = new r.Struct({
   SipMsgLen:	r.uint16,
   SipMsg:	new r.String('SipMsgLen', 'utf8')
 });
-
-
 
 // Exports
 
@@ -178,7 +145,3 @@ exports.SipOut = function(buffer){
 	return SipOut.decode(stream);
 }
 
-exports.SubSipOut = function(buffer){
-	var stream = new r.DecodeStream(buffer);
-	return SubSipOut.decode(stream);
-}
