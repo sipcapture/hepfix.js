@@ -1,7 +1,8 @@
 /* *****************************
-	HORACLIFIX.JS
-	(C) QXIP BV 2017
-	Based on negbie/horaclifix
+	HEPFIX.JS
+	(C) 2017 QXIP BV
+	(C) 2017 L. Mangani <lorenzo.mangani@gmail.com>
+	Structures Based on negbie/horaclifix
    *****************************
 */
 
@@ -128,7 +129,7 @@ var server = net.createServer(function (socket) {
 })
 .listen(config.ipfix_config ? config.ipfix_config.IPFIX_PORT : 4739);
 
-console.log('HORACLIFIX.js Listening on port '+ config.ipfix_config.IPFIX_PORT +' ...');
+console.log('HEPFIX.js Listening on port '+ config.ipfix_config.IPFIX_PORT +' ...');
 
 var exit = false;
 process.on('SIGINT', function() {
