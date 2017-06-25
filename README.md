@@ -1,12 +1,12 @@
 <img src="http://i.imgur.com/MAPMGfe.png" />
 
 # HEPFIX.js
-IPFIX to HEP/EEP  adapter for Oracle / ACME Packet Net-Net SBCs
+**IPFIX** to **HEP/EEP**  adapter for *Oracle / ACME Packet Net-Net SBCs*
 
-ORACLE or ACME PACKET Net-Net SBCs features a built in "Capture Agent" using a custom IPFIX template to export SIP messages and Statistics in realtime. HEPFIX converts IPFIX to HEP for [HOMER](http://sipcapture.org) and [HEPIC](http://hepic.tel).
+ORACLE /ACME PACKET Net-Net SBCs features a built in *"Capture Agent"* using a custom IPFIX template to export SIP messages and Statistics in realtime from the core. **HEPFIX** converts IPFIX to HEP for [HOMER](http://sipcapture.org) and [HEPIC](http://hepic.tel) without requiring port mirroring and switches/probes/agents.
 
 #### Status
-* Working prototype w/ HEP support! Testers Welcome!
+* Working prototype w/ HEP support!
 
 #### Install
 ```
@@ -64,4 +64,6 @@ The SBC will send a Handshake packet and start mirroring packets to HEPFIX
 Core Structures and GO version seeded by [Negbie](https://github.com/negbie) and project [horaclifix](https://github.com/negbie/horaclifix)
 
 ### LEGAL
-HEPFIX is an independent implementation of an IPFIX template. HEPIX is not related, affiliated to or endorsed by ORACLE Communications in any way or form. ACME PACKET is a trademark of ORACLE Communications. All material rights reserved by their respective owners and not claimed by the author. This software is provided as-is and without any warranty what-so-ever.
+This software is provided as-is and without any warranty what-so-ever. See LICENSE for license details.
+
+HEPFIX is an independent implementation of an IPFIX template. HEPIX is not related, affiliated to or endorsed by ORACLE Communications in any way or form. ACME PACKET is a trademark of ORACLE Communications. All material rights reserved by their respective owners and not claimed by the author. 
