@@ -1,18 +1,21 @@
 <img src="http://i.imgur.com/MAPMGfe.png" />
 
 # HEPfix.js
-IPFIX to HOMER/HEP  adapter for Oracle SBCs Types
+IPFIX to HOMER/HEP  adapter for Oracle / ACME Packet Net-Net SBCs
 
-NodeJS port of https://github.com/negbie/horaclifix
+ORACLE or ACME PACKET SBCs features a built in "Capture Agent" using a custom IPFIX template to export SIP messages and Statistics in realtime. HEPFIX converts IPFIX to HEP for [HOMER](http://sipcapture.org) and [HEPIC](http://hepic.tel).
+
+Core Structures are seeded by Negbie: https://github.com/negbie/horaclifix
 
 #### Status
-* working prototype w/ HEP support! Feedback needed
+* Working prototype w/ HEP support! Testers Welcome!
 
 #### Install
 ```
 npm install
 ```
 #### Configure
+Configure the IPFIX port and HEP Server settings using the ```config.json``` file:
 ```
 {
   ipfix_config: {
@@ -34,8 +37,8 @@ npm install
 nodejs hepfix.js
 ```
 
-#### Configure SBC
-ORACLE or ACME PACKET SBCs have a built in "capture agent" using a custom IPFIX template to export SIP messages and Statistics in realtime to [HOMER](http://sipcapture.org) and [HEPIC](http://hepic.tel). Enable the IPFIX comm-monitor using the following example and pointing at the HEPFIX IP and Port:
+#### Configure SBC Monitor
+Enable the IPFIX comm-monitor using the following example and pointing at the HEPFIX IP and Port:
 ```
 comm-monitor
     state           enabled
@@ -48,9 +51,12 @@ comm-monitor
         network-interface     wancom0:0
 ```
 
+Configuration can also be performed from the SBC User-Interface:
+<img src="http://i.imgur.com/Mt00OQb.png">
+
 The SBC will send a Handshake packet and start mirroring packets to HEPFIX
 
 
 
 ### LEGAL
-HEPFIX is an independent implementation of an IPFIX template. HEPIX is not related, affiliated to or endorsed by ORACLE Communications in any way or form. ACME PACKET is a trademark of ORACLE Communications. All rights reserved by their respective owners.
+HEPFIX is an independent implementation of an IPFIX template. HEPIX is not related, affiliated to or endorsed by ORACLE Communications in any way or form. ACME PACKET is a trademark of ORACLE Communications. All material rights reserved by their respective owners and not claimed by the author. This software is provided as-is and without any warranty what-so-ever.
