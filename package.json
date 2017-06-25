@@ -1,11 +1,11 @@
 {
-  "name": "horaclifix.js",
+  "name": "hepfix.js",
   "version": "0.0.1",
   "description": "HEP/HOMER SIPFIX hooks for ACME/Oracle SBC",
-  "main": "horaclifix.js",
+  "main": "hepfix.js",
   "repository": {
     "type": "git",
-    "url": "http://github.com/sipcapture/horaclifix.js"
+    "url": "http://github.com/sipcapture/hepfix.js"
   },
   "keywords": [
     "hep",
