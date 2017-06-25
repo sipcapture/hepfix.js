@@ -52,7 +52,7 @@ module.exports = {
   preHep:function(message) {
     var rcinfo = message.rcinfo;
     var msg = message.payload;
-    if (rcinfo.correlation_id == null || !(rcinfo.correlation_id.toString().length)) return;
+    // if (rcinfo.correlation_id == null || !(rcinfo.correlation_id.toString().length)) return;
     if (debug) console.log(msg);
     stats.rcvd++;
 
