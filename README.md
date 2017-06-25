@@ -1,22 +1,56 @@
 <img src="http://i.imgur.com/SUJ3UFJ.jpg?1" height="50px" /><img src="https://avatars2.githubusercontent.com/u/6690913?v=3&s=400" height="50px" />
 
-# horaclifix.js
-IPFIX/SIPFIX to HOMER/HEP  adapter for Oracle SBCs
+# HEPfix.js
+IPFIX to HOMER/HEP  adapter for Oracle SBCs Types
 
 NodeJS port of https://github.com/negbie/horaclifix
 
 #### Status
-* work in progress
-* loosely based on [RFC5101](https://www.rfc-editor.org/rfc/rfc5101.txt)
+* working prototype w/ HEP support! Feedback needed
 
 #### Install
 ```
 npm install
 ```
+#### Configure
+```
+{
+  ipfix_config: {
+    debug: false,
+    IPFIX_PORT: 4739
+  },
+  hep_config: {
+    debug: false,
+    HEP_SERVER: '10.0.0.176',
+    HEP_PORT: 9063,
+    HEP_ID: 2017,
+    HEP_PASS: 'oracme'
+  }
+}
+```
+
 #### Run
 ```
-nodejs horaclifix.js
+nodejs hepfix.js
 ```
+
+#### Configure SBC
+ORACLE or ACME PACKET SBCs have a built in "capture agent" using a custom IPFIX template to export SIP messages and Statistics in realtime to [HOMER](http://sipcapture.org) and [HEPIC](http://hepic.tel). Enable the IPFIX comm-monitor using the following example and pointing at the HEPFIX IP and Port:
+```
+comm-monitor
+    state           enabled
+    qos-enable      enabled
+    sbc-grp-id      0
+    tls-profile
+    monitor-collector
+        address               10.0.0.100
+        port                  4739
+        network-interface     wancom0:0
+```
+
+The SBC will send a Handshake packet and start mirroring packets to HEPFIX
+
+
 ##### Handshake Test
 ```
 echo -ne '\x00\x0A\x00\x30\x59\x41\x37\x38\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x20\x00\x01\x00\x02\x00\xFC\x77\x31\x00\x00\x00\x1E\x00\x00\x00\x00\x43\x5A\x07\x03\x00\x06\x65\x63\x7A\x37\x33\x30' | nc localhost 4739
