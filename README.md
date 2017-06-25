@@ -1,9 +1,9 @@
 <img src="http://i.imgur.com/MAPMGfe.png" />
 
-# HEPfix.js
-IPFIX to HOMER/HEP  adapter for Oracle / ACME Packet Net-Net SBCs
+# HEPFIX.js
+IPFIX to HEP/EEP  adapter for Oracle / ACME Packet Net-Net SBCs
 
-ORACLE or ACME PACKET SBCs features a built in "Capture Agent" using a custom IPFIX template to export SIP messages and Statistics in realtime. HEPFIX converts IPFIX to HEP for [HOMER](http://sipcapture.org) and [HEPIC](http://hepic.tel).
+ORACLE or ACME PACKET Net-Net SBCs features a built in "Capture Agent" using a custom IPFIX template to export SIP messages and Statistics in realtime. HEPFIX converts IPFIX to HEP for [HOMER](http://sipcapture.org) and [HEPIC](http://hepic.tel).
 
 Core Structures are seeded by Negbie: https://github.com/negbie/horaclifix
 
