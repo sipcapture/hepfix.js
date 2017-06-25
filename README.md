@@ -5,8 +5,6 @@ IPFIX to HEP/EEP  adapter for Oracle / ACME Packet Net-Net SBCs
 
 ORACLE or ACME PACKET Net-Net SBCs features a built in "Capture Agent" using a custom IPFIX template to export SIP messages and Statistics in realtime. HEPFIX converts IPFIX to HEP for [HOMER](http://sipcapture.org) and [HEPIC](http://hepic.tel).
 
-Core Structures are seeded by Negbie: https://github.com/negbie/horaclifix
-
 #### Status
 * Working prototype w/ HEP support! Testers Welcome!
 
@@ -56,7 +54,8 @@ Configuration can also be performed from the SBC User-Interface:
 
 The SBC will send a Handshake packet and start mirroring packets to HEPFIX
 
-
+### Credits
+Core Structures and GO version seeded by [Negbie](https://github.com/negbie) and project [horaclifix](https://github.com/negbie/horaclifix)
 
 ### LEGAL
 HEPFIX is an independent implementation of an IPFIX template. HEPIX is not related, affiliated to or endorsed by ORACLE Communications in any way or form. ACME PACKET is a trademark of ORACLE Communications. All material rights reserved by their respective owners and not claimed by the author. This software is provided as-is and without any warranty what-so-ever.
