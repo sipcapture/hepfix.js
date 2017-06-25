@@ -11,6 +11,9 @@ var sipfix = require('./sipfix.js')
 console.log("Press CTRL-C to Exit...");
 
 var config = require('./config.js');
+if (config.ipfix_config) {
+	var debug = config.ipfix_config.debug;
+}
 
 if (config.hep_config) {
   var hep_client = require('./hep-client.js');
@@ -25,31 +28,37 @@ else {
 // TEST:
 // echo -ne '\x00\x0A\x00\x30\x59\x41\x37\x38\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x20\x00\x01\x00\x02\x00\xFC\x77\x31\x00\x00\x00\x1E\x00\x00\x00\x00\x43\x5A\x07\x03\x00\x06\x65\x63\x7A\x37\x33\x30' | nc localhost 4739
 
-// Type Handler
+// HEP Handler
+var HEPit = function(message){
+	// Form and Send IPFIX JSON as HEP
+	hep_client.preHep( hep_client.rcinfo(message) );
+};
 
+// IPFIX Type Handler
 var fixHandler = function(data,socket){
 	var dlen = data.byteLength;
 	//var dlen = data.length;
 	// Determine IPFIX Type
 	var result = sipfix.readHeader(data);
 	if (result.SetID == 256) {
-		console.log('GOT HANDSHAKE ID: ',result.SetID);
+		if (debug) console.log('GOT HANDSHAKE ID: ',result.SetID);
 		var shake = sipfix.readHandshake(data);
 		shake.SetID++
-		console.log('REPLYING WITH ID: '+shake.SetID);
+		if (debug) console.log('REPLYING WITH ID: '+shake.SetID);
 		socket.write(sipfix.writeHandshake(shake) );
 		return;
 
 	} else if (result.SetID === 258) {
 		if (dlen > result.Length ) {
-			console.log('258: MULTI-MESSAGE');
-			console.log("Header length: "+result.Length+" < Packet length: "+dlen);
+			if (debug) console.log('258: MULTI-MESSAGE');
+			if (debug) console.log("Header length: "+result.Length+" < Packet length: "+dlen);
 
 			var sip = sipfix.SipOut( data.slice(0,result.Length));
 			if (sip) {
 				sip.SrcIP = sip.SrcIP.join('.');
 				sip.DstIP = sip.DstIP.join('.');
-				console.log(sip.SipMsg.toString() );
+				if (debug) console.log(sip.SipMsg.toString() );
+				HEPit(sip);
 			}
 
 			// Process Next
@@ -57,26 +66,28 @@ var fixHandler = function(data,socket){
 			return;
 
 		} else {
-			console.log('258: SINGLE-MESSAGE');
+			if (debug) console.log('258: SINGLE-MESSAGE');
 			var sip = sipfix.SipIn(data);
 			if (sip) {
 				sip.SrcIP = sip.SrcIP.join('.');
 				sip.DstIP = sip.DstIP.join('.');
-				console.log(sip.SipMsg.toString() );
+				if (debug) console.log(sip.SipMsg.toString() );
+				HEPit(sip);
 			}
 			return;
 		}
 
 	} else if (result.SetID === 259) {
 		if (dlen > result.Length ) {
-			console.log('259: MULTI-MESSAGE');
-			console.log("Header length: "+result.Length+" < Packet length: "+dlen);
+			if (debug) console.log('259: MULTI-MESSAGE');
+			if (debug) console.log("Header length: "+result.Length+" < Packet length: "+dlen);
 
 			var sip = sipfix.SipOut( data.slice(0,result.Length));
 			if (sip) {
 				sip.SrcIP = sip.SrcIP.join('.');
 				sip.DstIP = sip.DstIP.join('.');
-				console.log(sip.SipMsg.toString() );
+				if (debug) console.log(sip.SipMsg.toString() );
+				HEPit(sip);
 			}
 
 			// Process Next
@@ -84,13 +95,14 @@ var fixHandler = function(data,socket){
 			return;
 		} else {
 
-			console.log('259: SINGLE-MESSAGE');
+			if (debug) console.log('259: SINGLE-MESSAGE');
 			//var sip = sipfix.SipIn(data);
 			var sip = sipfix.SipOut(data);
 			if (sip) {
 				sip.SrcIP = sip.SrcIP.join('.');
 				sip.DstIP = sip.DstIP.join('.');
-				console.log(sip.SipMsg.toString() );
+				if (debug) console.log(sip.SipMsg.toString() );
+				HEPit(sip);
 		   	}
 			return;
 		}
@@ -98,8 +110,7 @@ var fixHandler = function(data,socket){
 			//Keep-Alive?
 			return;
 	} else {
-		console.log('Invalid/Unsupported Type: ',result.setID );
-		// console.log('DEBUG:',result);
+		if (debug) console.log('Invalid/Unsupported Type: ',result.setID );
 			return;
 	}
 
@@ -117,7 +128,7 @@ var server = net.createServer(function (socket) {
 })
 .listen(config.ipfix_config ? config.ipfix_config.IPFIX_PORT : 4739);
 
-console.log('HORACLIFIX.js Listening...');
+console.log('HORACLIFIX.js Listening on port '+ config.ipfix_config.IPFIX_PORT +' ...');
 
 var exit = false;
 process.on('SIGINT', function() {

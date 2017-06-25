@@ -29,7 +29,8 @@ module.exports = {
     socket = getSocket('udp4'); 
   },
   rcinfo:function(message) {
-        var rc = {
+	if (!message.SipMsg) return;
+        return {
           rcinfo: {
             type: 'HEP',
             version: 3,
@@ -47,7 +48,6 @@ module.exports = {
           },
           payload: message.SipMsg
         };
-	return rc;
   },
   preHep:function(message) {
     var rcinfo = message.rcinfo;
@@ -62,7 +62,7 @@ module.exports = {
     rcinfo.time_usec = datenow - (rcinfo.time_sec*1000);
 
     if (debug) console.log(rcinfo);
-    sendHEP3(msg, rcinfo);	
+    sendHEP3(msg, rcinfo);
   },
   getStats:function() {
     return stats;
