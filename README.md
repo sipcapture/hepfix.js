@@ -54,7 +54,10 @@ Configuration can also be performed from the SBC User-Interface:
 
 The SBC will send a Handshake packet and start mirroring packets to HEPFIX
 
+------------------------------
+
 <img src="http://i.imgur.com/Erkji9P.png"/>
+
 ------------------------------
 
 ### To-DO
