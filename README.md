@@ -44,7 +44,7 @@ comm-monitor
     sbc-grp-id      0
     tls-profile
     monitor-collector
-        address               10.0.0.100
+        address               192.168.122.1
         port                  4739
         network-interface     wancom0:0
 ```
@@ -53,6 +53,12 @@ Configuration can also be performed from the SBC User-Interface:
 <img src="http://i.imgur.com/Mt00OQb.png">
 
 The SBC will send a Handshake packet and start mirroring packets to HEPFIX
+
+------------------------------
+
+### To-DO
+* Implement TCP support
+* Interpres QoS reports and other types
 
 ### Credits
 Core Structures and GO version seeded by [Negbie](https://github.com/negbie) and project [horaclifix](https://github.com/negbie/horaclifix)
