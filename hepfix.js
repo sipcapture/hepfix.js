@@ -121,6 +121,9 @@ var fixHandler = function(data,socket){
 // SIPFIX server
 var server = net.createServer(function (socket) {
     // socket.setEncoding(null);
+    socket.on('error', function (err) {
+	console.log(err);
+    });
     socket.on('data', function (data) {
 	// var result = sipfix.readHeader(data);
 	fixHandler(data,socket);
