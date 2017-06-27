@@ -7,6 +7,7 @@ ORACLE /ACME PACKET Net-Net SBCs features a built in *"Capture Agent"* using a c
 
 #### Status
 * Working prototype w/ HEP support!
+* UDP/TCP Relay, QoS In progress
 
 #### Install
 ```
@@ -61,8 +62,8 @@ The SBC will send a Handshake packet and start mirroring packets to HEPFIX
 ------------------------------
 
 ### To-DO
-* Implement TCP support
-* Interpres QoS reports and other types
+* TEST, TEST, TEST!
+* Convert QoS Reports to RTPAgent reports
 
 ### Credits
 Core Structures and GO version seeded by [Negbie](https://github.com/negbie) and project [horaclifix](https://github.com/negbie/horaclifix)
