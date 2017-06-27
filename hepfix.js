@@ -48,7 +48,7 @@ var fixHandler = function(data,socket){
 		if (debug) console.log('REPLYING WITH ID: '+shake.SetID);
 		socket.write(sipfix.writeHandshake(shake) );
 		return;
-
+	/* UDP */
 	} else if (result.SetID === 258) {
 		if (dlen > result.Length ) {
 			if (debug) console.log('258: MULTI-MESSAGE');
@@ -56,8 +56,8 @@ var fixHandler = function(data,socket){
 
 			var sip = sipfix.SipOut( data.slice(0,result.Length));
 			if (sip) {
-				sip.SrcIP = sip.SrcIP.join('.');
-				sip.DstIP = sip.DstIP.join('.');
+				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
+				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
 				if (debug) console.log(sip.SipMsg.toString() );
 				HEPit(sip);
 			}
@@ -70,8 +70,8 @@ var fixHandler = function(data,socket){
 			if (debug) console.log('258: SINGLE-MESSAGE');
 			var sip = sipfix.SipIn(data);
 			if (sip) {
-				sip.SrcIP = sip.SrcIP.join('.');
-				sip.DstIP = sip.DstIP.join('.');
+				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
+				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
 				if (debug) console.log(sip.SipMsg.toString() );
 				HEPit(sip);
 			}
@@ -85,8 +85,8 @@ var fixHandler = function(data,socket){
 
 			var sip = sipfix.SipOut( data.slice(0,result.Length));
 			if (sip) {
-				sip.SrcIP = sip.SrcIP.join('.');
-				sip.DstIP = sip.DstIP.join('.');
+				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
+				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
 				if (debug) console.log(sip.SipMsg.toString() );
 				HEPit(sip);
 			}
@@ -100,28 +100,94 @@ var fixHandler = function(data,socket){
 			//var sip = sipfix.SipIn(data);
 			var sip = sipfix.SipOut(data);
 			if (sip) {
-				sip.SrcIP = sip.SrcIP.join('.');
-				sip.SrcIP = sip.SrcIP.join('.');
+				console.log(sip);
+				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
+				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
 
 				if (debug) console.log(sip.SipMsg.toString() );
 				HEPit(sip);
 		   	}
 			return;
 		}
+
+
+	/* TCP */
+	} else if (result.SetID === 260) {
+		if (dlen > result.Length ) {
+			if (debug) console.log('260-TCP: MULTI-MESSAGE');
+			if (debug) console.log("Header length: "+result.Length+" < Packet length: "+dlen);
+
+			var sip = sipfix.SipInTCP( data.slice(0,result.Length));
+			if (sip) {
+				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
+				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
+				if (debug) console.log(sip.SipMsg.toString() );
+				HEPit(sip);
+			}
+
+			// Process Next
+			fixHandler(data.slice(result.Length,data.length));
+			return;
+
+		} else {
+			if (debug) console.log('260-TCP: SINGLE-MESSAGE');
+			var sip = sipfix.SipInTCP(data);
+			if (sip) {
+				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
+				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
+				if (debug) console.log(sip.SipMsg.toString() );
+				HEPit(sip);
+			}
+			return;
+		}
+
+	} else if (result.SetID === 261) {
+		if (dlen > result.Length ) {
+			if (debug) console.log('261-TCP: MULTI-MESSAGE');
+			if (debug) console.log("Header length: "+result.Length+" < Packet length: "+dlen);
+
+			var sip = sipfix.SipOutTCP( data.slice(0,result.Length));
+			if (sip) {
+				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
+				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
+				if (debug) console.log(sip.SipMsg.toString() );
+				HEPit(sip);
+			}
+
+			// Process Next
+			fixHandler(data.slice(result.Length,data.length));
+			return;
+		} else {
+
+			if (debug) console.log('261-TCP: SINGLE-MESSAGE');
+			//var sip = sipfix.SipIn(data);
+			var sip = sipfix.SipOutTCP(data);
+			if (sip) {
+				console.log(sip);
+				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
+				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
+
+				if (debug) console.log(sip.SipMsg.toString() );
+				HEPit(sip);
+		   	}
+			return;
+		}
+
+	/* QOS */
 	} else if (result.SetID === 268) {
 			//QoS Reports
 			if (debug) console.log('268: QOS REPORT');
 			var qos = sipfix.StatsQos(data);
 			if (qos) {
-				sip.CallerIncSrcIP = sip.CallerIncSrcIP.join('.');
-				sip.CallerIncDstIP = sip.CallerIncDstIP.join('.');
-				sip.CalleeIncSrcIP = sip.CalleeIncSrcIP.join('.');
-				sip.CalleeIncDstIP = sip.CalleeIncDstIP.join('.');
+				sip.CallerIncSrcIP = Array.prototype.join.call(sip.CallerIncSrcIP, '.');
+				sip.CallerIncDstIP = Array.prototype.join.call(sip.CallerIncDstIP, '.');
+				sip.CalleeIncSrcIP = Array.prototype.join.call(sip.CalleeIncSrcIP, '.');
+				sip.CalleeIncDstIP = Array.prototype.join.call(sip.CalleeIncDstIP, '.');
 
-				sip.CallerOutSrcIP = sip.CallerOutSrcIP.join('.');
-				sip.CallerOutDstIP = sip.CallerOutDstIP.join('.');
-				sip.CalleeOutSrcIP = sip.CalleeOutSrcIP.join('.');
-				sip.CalleeOutDstIP = sip.CalleeOutDstIP.join('.');
+				sip.CallerOutSrcIP = Array.prototype.join.call(sip.CallerOutSrcIP, '.');
+				sip.CallerOutDstIP = Array.prototype.join.call(sip.CallerOutDstIP, '.');
+				sip.CalleeOutSrcIP = Array.prototype.join.call(sip.CalleeOutSrcIP, '.');
+				sip.CalleeOutDstIP = Array.prototype.join.call(sip.CalleeOutDstIP, '.');
 
 				console.log('QOS DATA:',qos);
 			}
