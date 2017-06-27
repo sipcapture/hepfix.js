@@ -101,14 +101,30 @@ var fixHandler = function(data,socket){
 			var sip = sipfix.SipOut(data);
 			if (sip) {
 				sip.SrcIP = sip.SrcIP.join('.');
-				sip.DstIP = sip.DstIP.join('.');
+				sip.SrcIP = sip.SrcIP.join('.');
+
 				if (debug) console.log(sip.SipMsg.toString() );
 				HEPit(sip);
 		   	}
 			return;
 		}
-	} else if (result.SetID === 0) {
-			//Keep-Alive?
+	} else if (result.SetID === 268) {
+			//QoS Reports
+			if (debug) console.log('268: QOS REPORT');
+			var qos = sipfix.StatsQos(data);
+			if (qos) {
+				sip.CallerIncSrcIP = sip.CallerIncSrcIP.join('.');
+				sip.CallerIncDstIP = sip.CallerIncDstIP.join('.');
+				sip.CalleeIncSrcIP = sip.CalleeIncSrcIP.join('.');
+				sip.CalleeIncDstIP = sip.CalleeIncDstIP.join('.');
+
+				sip.CallerOutSrcIP = sip.CallerOutSrcIP.join('.');
+				sip.CallerOutDstIP = sip.CallerOutDstIP.join('.');
+				sip.CalleeOutSrcIP = sip.CalleeOutSrcIP.join('.');
+				sip.CalleeOutDstIP = sip.CalleeOutDstIP.join('.');
+
+				console.log('QOS DATA:',qos);
+			}
 			return;
 	} else {
 		if (debug) console.log('Invalid/Unsupported Type: ',result.setID );

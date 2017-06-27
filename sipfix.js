@@ -109,6 +109,99 @@ var SipIn = new r.Struct({
   SipMsg:	new r.String('SipMsgLen', 'utf8')
 });
 
+
+var StatsQos = new r.Struct({
+
+	IncRtpBytes:       r.uint32,
+	IncRtpPackets:     r.uint32,
+	IncRtpLostPackets: r.uint32,
+	IncRtpAvgJitter:   r.uint32,
+	IncRtpMaxJitter:   r.uint32,
+
+	IncRtcpBytes:       r.uint32,
+	IncRtcpPackets:     r.uint32,
+	IncRtcpLostPackets: r.uint32,
+	IncRtcpAvgJitter:   r.uint32,
+	IncRtcpMaxJitter:   r.uint32,
+	IncRtcpAvgLat:      r.uint32,
+	IncRtcpMaxLat:      r.uint32,
+
+	IncrVal: r.uint32,
+	IncMos:  r.uint32,
+
+	OutRtpBytes:       r.uint32,
+	OutRtpPackets:     r.uint32,
+	OutRtpLostPackets: r.uint32,
+	OutRtpAvgJitter:   r.uint32,
+	OutRtpMaxJitter:   r.uint32,
+
+	OutRtcpBytes:       r.uint32,
+	OutRtcpPackets:     r.uint32,
+	OutRtcpLostPackets: r.uint32,
+	OutRtcpAvgJitter:   r.uint32,
+	OutRtcpMaxJitter:   r.uint32,
+	OutRtcpAvgLat:      r.uint32,
+	OutRtcpMaxLat:      r.uint32,
+
+	OutrVal: r.uint32,
+	OutMos:  r.uint32,
+
+	Type: r.uint8,
+
+	CallerIncSrcIP:   new r.Array(r.uint8, 4),
+	CallerIncDstIP:   new r.Array(r.uint8, 4),
+	CallerIncSrcPort: r.uint16,
+	CallerIncDstPort: r.uint16,
+
+	CalleeIncSrcIP:   new r.Array(r.uint8, 4),
+	CalleeIncDstIP:   new r.Array(r.uint8, 4),
+	CalleeIncSrcPort: r.uint16,
+	CalleeIncDstPort: r.uint16,
+
+	CallerOutSrcIP:   new r.Array(r.uint8, 4),
+	CallerOutDstIP:   new r.Array(r.uint8, 4),
+	CallerOutSrcPort: r.uint16,
+	CallerOutDstPort: r.uint16,
+
+	CalleeOutSrcIP:   new r.Array(r.uint8, 4),
+	CalleeOutDstIP:   new r.Array(r.uint8, 4),
+	CalleeOutSrcPort: r.uint16,
+	CalleeOutDstPort: r.uint16,
+
+	CallerIntSlot: r.uint8,
+	CallerIntPort: r.uint8,
+	CallerIntVlan: r.uint16,
+
+	CalleeIntSlot: r.uint8,
+	CalleeIntPort: r.uint8,
+	CalleeIntVlan: r.uint16,
+
+	BeginTimeSec: r.uint32,
+	BeginTimeMic: r.uint32,
+
+	EndTimeSec:   r.uint32,
+	EndinTimeMic: r.uint32,
+
+	Seperator: r.uint8,
+
+	IncRealmLen:	r.uint16,
+	IncRealm:	new r.String('IncRealmLen', 'utf16'),
+	IncRealmEnd: 	r.uint8,
+
+	OutRealmLen:	r.uint16,
+	OutRealm:	new r.String('OutRealmLen', 'utf16'),
+	OutRealmEnd: 	r.uint8,
+
+	IncCallIDLen:	r.uint16,
+	IncCallID:	new r.String('IncCallIDLen', 'utf16'),
+	IncCallIDEnd: 	r.uint8,
+
+	OutCallIDLen:	r.uint16,
+	OutCallID:	new r.String('OutCallIDLen', 'utf16')
+});
+
+
+
 // Exports
 
 exports.version = "1.0.1";
@@ -143,5 +236,10 @@ exports.SipIn = function(buffer){
 exports.SipOut = function(buffer){
 	var stream = new r.DecodeStream(buffer);
 	return SipOut.decode(stream);
+}
+
+exports.StatsQos = function(buffer){
+	var stream = new r.DecodeStream(buffer);
+	return StatsQos.decode(stream);
 }
 
