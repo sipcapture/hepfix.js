@@ -109,7 +109,7 @@ var fixHandler = function(data,socket){
 			//var sip = sipfix.SipIn(data);
 			var sip = sipfix.SipOut(data);
 			if (sip) {
-				console.log(sip);
+				if (debug) console.log(sip);
 				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
 				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
 
@@ -172,7 +172,7 @@ var fixHandler = function(data,socket){
 			//var sip = sipfix.SipIn(data);
 			var sip = sipfix.SipOutTCP(data);
 			if (sip) {
-				console.log(sip);
+				if (debug) console.log(sip);
 				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
 				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
 
@@ -184,26 +184,31 @@ var fixHandler = function(data,socket){
 
 	/* QOS */
 	} else if (result.SetID === 268) {
+		if (dlen > result.Length ) {
+			if (debug) console.log('268: QOS MULTI-MESSAGE');
+		}
+
 			//QoS Reports
 			if (debug) console.log('268: QOS REPORT');
 			var qos = sipfix.StatsQos(data);
+			console.log(result,qos)
 			if (qos) {
-				sip.CallerIncSrcIP = Array.prototype.join.call(sip.CallerIncSrcIP, '.');
-				sip.CallerIncDstIP = Array.prototype.join.call(sip.CallerIncDstIP, '.');
-				sip.CalleeIncSrcIP = Array.prototype.join.call(sip.CalleeIncSrcIP, '.');
-				sip.CalleeIncDstIP = Array.prototype.join.call(sip.CalleeIncDstIP, '.');
+				qos.CallerIncSrcIP = Array.prototype.join.call(qos.CallerIncSrcIP, '.');
+				qos.CallerIncDstIP = Array.prototype.join.call(qos.CallerIncDstIP, '.');
+				qos.CalleeIncSrcIP = Array.prototype.join.call(qos.CalleeIncSrcIP, '.');
+				qos.CalleeIncDstIP = Array.prototype.join.call(qos.CalleeIncDstIP, '.');
 
-				sip.CallerOutSrcIP = Array.prototype.join.call(sip.CallerOutSrcIP, '.');
-				sip.CallerOutDstIP = Array.prototype.join.call(sip.CallerOutDstIP, '.');
-				sip.CalleeOutSrcIP = Array.prototype.join.call(sip.CalleeOutSrcIP, '.');
-				sip.CalleeOutDstIP = Array.prototype.join.call(sip.CalleeOutDstIP, '.');
+				qos.CallerOutSrcIP = Array.prototype.join.call(qos.CallerOutSrcIP, '.');
+				qos.CallerOutDstIP = Array.prototype.join.call(qos.CallerOutDstIP, '.');
+				qos.CalleeOutSrcIP = Array.prototype.join.call(qos.CalleeOutSrcIP, '.');
+				qos.CalleeOutDstIP = Array.prototype.join.call(qos.CalleeOutDstIP, '.');
 
 				console.log('QOS DATA:',qos);
 
-				console.log('RTP-INC',qosfix.getPayloadIncRTP);
-				console.log('RTP-OUT',qosfix.getPayloadOutRTP);
-				console.log('RTCP-INC',qosfix.getPayloadIncRTCP);
-				console.log('RTCP-OUT',qosfix.getPayloadOutRTCP);
+				console.log('RTP-INC',qosfix.getPayloadIncRTP(qos));
+				console.log('RTP-OUT',qosfix.getPayloadOutRTP(qos));
+				console.log('RTCP-INC',qosfix.getPayloadIncRTCP(qos));
+				console.log('RTCP-OUT',qosfix.getPayloadOutRTCP(qos));
 
 			}
 			return;

@@ -126,7 +126,7 @@ var SipOutTCP = new r.Struct({
   SrcIP:	new r.Array(r.uint8, 4),
   DstPort:	r.uint16,
   SrcPort:	r.uint16,
-  Context:	r.uint16,
+  Context:	r.uint32,
   CallIDLen:	r.uint8,
   CallID:	new r.String('CallIDLen', 'utf8'),
   CallIDEnd:	r.uint8,
@@ -151,7 +151,7 @@ var SipInTCP = new r.Struct({
   SrcIP:	new r.Array(r.uint8, 4),
   DstPort:	r.uint16,
   SrcPort:	r.uint16,
-  Context:	r.uint16,
+  Context:	r.uint32,
   CallIDEnd:	r.uint8,
   SipMsgLen:	r.uint16,
   SipMsg:	new r.String('SipMsgLen', 'utf8')
@@ -159,6 +159,13 @@ var SipInTCP = new r.Struct({
 
 
 var StatsQos = new r.Struct({
+  	Version: 	r.uint16,
+  	Length: 	r.uint16,
+  	ExportTime: 	r.uint32,
+  	SeqNum: 	r.uint32,
+  	ObservationID: r.uint32,
+  	SetID: 	r.uint16,
+  	SetLen: 	r.uint16,
 
 	IncRtpBytes:       r.uint32,
 	IncRtpPackets:     r.uint32,
@@ -233,19 +240,19 @@ var StatsQos = new r.Struct({
 	Seperator: r.uint8,
 
 	IncRealmLen:	r.uint16,
-	IncRealm:	new r.String('IncRealmLen', 'utf16'),
+	IncRealm:	new r.String('IncRealmLen', 'utf8'),
 	IncRealmEnd: 	r.uint8,
 
 	OutRealmLen:	r.uint16,
-	OutRealm:	new r.String('OutRealmLen', 'utf16'),
+	OutRealm:	new r.String('OutRealmLen', 'utf8'),
 	OutRealmEnd: 	r.uint8,
 
 	IncCallIDLen:	r.uint16,
-	IncCallID:	new r.String('IncCallIDLen', 'utf16'),
+	IncCallID:	new r.String('IncCallIDLen', 'utf8'),
 	IncCallIDEnd: 	r.uint8,
 
 	OutCallIDLen:	r.uint16,
-	OutCallID:	new r.String('OutCallIDLen', 'utf16')
+	OutCallID:	new r.String('OutCallIDLen', 'utf8')
 });
 
 
@@ -256,48 +263,47 @@ exports.version = "1.0.1";
 
 exports.readHeader = function(buffer){
 	var stream = new r.DecodeStream(buffer);
-	return Header.decode(stream);
+	try { return Header.decode(stream); } catch (e) { console.log(e); return null; }
 }
 
 exports.writeHeader = function(result){
 	var stream = new r.EncodeStream();
 	Header.encode(stream, result);
-	return stream.buffer;
+	try { return stream.buffer; } catch (e) { console.log(e); return null; }
 }
 
 exports.readHandshake = function(buffer){
 	var stream = new r.DecodeStream(buffer);
-	return HandShake.decode(stream);
+	try { return HandShake.decode(stream); } catch (e) { console.log(e); return null; }
 }
 
 exports.writeHandshake = function(result){
 	var stream = new r.EncodeStream();
 	HandShake.encode(stream, result);
-	return stream.buffer;
+	try { return stream.buffer; } catch (e) { console.log(e); return null; }
 }
 
 exports.SipIn = function(buffer){
 	var stream = new r.DecodeStream(buffer);
-	return SipIn.decode(stream);
+	try { return SipIn.decode(stream) } catch(e) { console.log(e); return null; }
 }
 
 exports.SipOut = function(buffer){
 	var stream = new r.DecodeStream(buffer);
-	return SipOut.decode(stream);
+	try { return SipOut.decode(stream); } catch(e) { console.log(e); return null; }
 }
 
 exports.SipInTCP = function(buffer){
 	var stream = new r.DecodeStream(buffer);
-	return SipIn.decode(stream);
+	try { return SipInTCP.decode(stream); } catch(e) { console.log(e); return null; }
 }
 
 exports.SipOutTCP = function(buffer){
 	var stream = new r.DecodeStream(buffer);
-	return SipOut.decode(stream);
+	try { return SipOutTCP.decode(stream); } catch(e) { console.log(e); return null; }
 }
 
 exports.StatsQos = function(buffer){
-	var stream = new r.DecodeStream(buffer);
-	return StatsQos.decode(stream);
+	try { return StatsQos.decode( new r.DecodeStream(buffer) ); } catch(e) { console.log(e); return null; }
 }
 

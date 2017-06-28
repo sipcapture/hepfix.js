@@ -1,7 +1,7 @@
 var config = {
   ipfix_config: {
     debug: false,
-    qos: false,
+    qos: true,
     sip: true,
     IPFIX_PORT: 4739
   },

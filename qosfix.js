@@ -41,15 +41,13 @@ exports.getPayloadIncRTP = function(qos){
 	"CLOCK":8000,
 	"CODEC_NAME": qos.Type ,
 	"DIR":0,
-	"REPORT_NAME": qos.IncRealm+':'+ qos.OutRealm ,
+	"REPORT_NAME": "RTP:"+qos.IncRealm+':'+ qos.OutRealm ,
 	"PARTY":0,
 	"TYPE":"PERIODIC"
   }
-
 };
 
 exports.getPayloadOutRTP = function(qos){
-
   return {
 	"CORRELATION_ID": qos.OutCallID ,
 	"RTP_SIP_CALL_ID": qos.OutCallID ,
@@ -84,7 +82,7 @@ exports.getPayloadOutRTP = function(qos){
 	"CLOCK":8000,
 	"CODEC_NAME": qos.Type ,
 	"DIR":1,
-	"REPORT_NAME": qos.OutRealm+':'+ qos.IncRealm ,
+	"REPORT_NAME": "RTP:"+qos.OutRealm+':'+ qos.IncRealm ,
 	"PARTY":1,
 	"TYPE":"PERIODIC"
   }
@@ -94,8 +92,7 @@ exports.getPayloadOutRTP = function(qos){
 
 /* RTCP PAYLOAD INC/OUT: */
 
-exports.getPayloadIncRCTP = function(qos){
-
+exports.getPayloadIncRTCP = function(qos){
 
   return {
 	"CORRELATION_ID": qos.IncCallID ,
@@ -131,7 +128,7 @@ exports.getPayloadIncRCTP = function(qos){
 	"CLOCK":8000,
 	"CODEC_NAME": qos.Type ,
 	"DIR":0,
-	"REPORT_NAME": qos.IncRealm+':'+ qos.OutRealm ,
+	"REPORT_NAME": "RTCP"+qos.IncRealm+':'+ qos.OutRealm ,
 	"PARTY":0,
 	"TYPE":"PERIODIC"
   }
@@ -173,7 +170,7 @@ exports.getPayloadOutRTCP = function(qos){
 	"CLOCK":8000,
 	"CODEC_NAME": qos.Type ,
 	"DIR":1,
-	"REPORT_NAME": qos.OutRealm+':'+ qos.IncRealm ,
+	"REPORT_NAME": "RTCP:"+qos.OutRealm+':'+ qos.IncRealm ,
 	"PARTY":1,
 	"TYPE":"PERIODIC"
   }
