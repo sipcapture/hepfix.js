@@ -128,7 +128,7 @@ exports.getPayloadIncRTCP = function(qos){
 	"CLOCK":8000,
 	"CODEC_NAME": qos.Type ,
 	"DIR":0,
-	"REPORT_NAME": "RTCP"+qos.IncRealm+':'+ qos.OutRealm ,
+	"REPORT_NAME": "RTCP:"+qos.IncRealm+':'+ qos.OutRealm ,
 	"PARTY":0,
 	"TYPE":"PERIODIC"
   }

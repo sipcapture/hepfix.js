@@ -41,7 +41,17 @@ if (config.ipfix_config) {
 // HEP Handler
 var HEPit = function(message){
 	// Form and Send IPFIX JSON as HEP
-	hep_client.preHep( hep_client.rcinfo(message) );
+	hep_client.preHep( hep_client.rcinfo(message,1,'SIP') );
+};
+
+var QOSit = function(message){
+	// Form and Send IPFIX JSON as HEP
+	hep_client.preHep( hep_client.rcinfo(message,34,'JSON') );
+};
+
+var MOSit = function(message,mos){
+	// Form and Send IPFIX JSON as HEP
+	hep_client.preHep( hep_client.rcmos(message,mos) );
 };
 
 // IPFIX Type Handler
@@ -185,13 +195,12 @@ var fixHandler = function(data,socket){
 	/* QOS */
 	} else if (result.SetID === 268) {
 		if (dlen > result.Length ) {
-			if (debug) console.log('268: QOS MULTI-MESSAGE');
+			if (debug) console.log('268: QOS MULTI-MESSAGE ??');
 		}
 
 			//QoS Reports
 			if (debug) console.log('268: QOS REPORT');
 			var qos = sipfix.StatsQos(data);
-			console.log(result,qos)
 			if (qos) {
 				qos.CallerIncSrcIP = Array.prototype.join.call(qos.CallerIncSrcIP, '.');
 				qos.CallerIncDstIP = Array.prototype.join.call(qos.CallerIncDstIP, '.');
@@ -203,12 +212,19 @@ var fixHandler = function(data,socket){
 				qos.CalleeOutSrcIP = Array.prototype.join.call(qos.CalleeOutSrcIP, '.');
 				qos.CalleeOutDstIP = Array.prototype.join.call(qos.CalleeOutDstIP, '.');
 
-				console.log('QOS DATA:',qos);
+				MOSit( { CallID: qos.IncCallID }, qos.IncMos );
+				MOSit( { CallID: qos.OutCallID }, qos.OutMos );
 
-				console.log('RTP-INC',qosfix.getPayloadIncRTP(qos));
-				console.log('RTP-OUT',qosfix.getPayloadOutRTP(qos));
-				console.log('RTCP-INC',qosfix.getPayloadIncRTCP(qos));
-				console.log('RTCP-OUT',qosfix.getPayloadOutRTCP(qos));
+				if (debug) console.log('RTP-INC',qosfix.getPayloadIncRTP(qos));
+				QOSit(qosfix.getPayloadIncRTP(qos) );
+				if (debug) console.log('RTP-OUT',qosfix.getPayloadOutRTP(qos));
+				QOSit(qosfix.getPayloadOutRTP(qos) );
+				if (debug) console.log('RTCP-INC',qosfix.getPayloadIncRTCP(qos));
+				QOSit(qosfix.getPayloadIncRTCP(qos) );
+				if (debug) console.log('RTCP-OUT',qosfix.getPayloadOutRTCP(qos));
+				QOSit(qosfix.getPayloadOutRTCP(qos) );
+
+
 
 			}
 			return;

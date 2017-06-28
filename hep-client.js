@@ -28,18 +28,20 @@ module.exports = {
     socket = dgram.createSocket("udp4");
     socket = getSocket('udp4'); 
   },
-  rcinfo:function(message) {
-	if (!message.SipMsg) return;
+  rcinfo:function(message,type,ptype) {
+	if (!type) { var type = 1; }
+	if (!ptype) { var ptype = "SIP"; }
+
         return {
           rcinfo: {
             type: 'HEP',
             version: 3,
-            payload_type: 'SIP',
+            payload_type: ptype,
             captureId: hep_id,
             capturePass: hep_pass,
             ip_family: 2,
             protocol: 17,
-            proto_type: 1,
+            proto_type: type,
             srcIp: message.SrcIP,
             dstIp: message.DstIP,
             srcPort: message.SrcPort,
@@ -47,6 +49,27 @@ module.exports = {
             correlation_id: message.CallID ? message.CallID : ''
           },
           payload: message.SipMsg
+        };
+  },
+  rcmos:function(message,mos) {
+        return {
+          rcinfo: {
+            type: 'HEP',
+            version: 3,
+            payload_type: 'JSON',
+            captureId: hep_id,
+            capturePass: hep_pass,
+            ip_family: 2,
+            protocol: 17,
+            proto_type: 35,
+            srcIp: message.SrcIP,
+            dstIp: message.DstIP,
+            srcPort: message.SrcPort,
+            dstPort: message.DstPort,
+            correlation_id: message.CallID ? message.CallID : '',
+	    mos: mos
+          },
+          payload: message
         };
   },
   preHep:function(message) {
