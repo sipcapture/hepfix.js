@@ -8,6 +8,7 @@
 
 var net = require('net');
 var sipfix = require('./sipfix.js')
+var qosfix = require('./qosfix.js')
 
 console.log("Press CTRL-C to Exit...");
 
@@ -22,6 +23,14 @@ if (config.hep_config) {
 }
 else {
   console.log('Must provide HEP configuration');
+  exit;
+}
+
+if (config.ipfix_config) {
+	var enable_sip = config.ipfix_config.sip ? config.ipfix_config.sip : "true";
+	var enable_qos = config.ipfix_config.qos ? config.ipfix_config.qos : "false";
+} else {
+  console.log('Must provide IPFIX configuration');
   exit;
 }
 
@@ -190,6 +199,12 @@ var fixHandler = function(data,socket){
 				sip.CalleeOutDstIP = Array.prototype.join.call(sip.CalleeOutDstIP, '.');
 
 				console.log('QOS DATA:',qos);
+
+				console.log('RTP-INC',qosfix.getPayloadIncRTP);
+				console.log('RTP-OUT',qosfix.getPayloadOutRTP);
+				console.log('RTCP-INC',qosfix.getPayloadIncRTCP);
+				console.log('RTCP-OUT',qosfix.getPayloadOutRTCP);
+
 			}
 			return;
 	} else {

@@ -1,6 +1,6 @@
 {
   "name": "hepfix.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "HEP/HOMER IPFIX hooks for ACME Packet / Oracle SBC",
   "main": "hepfix.js",
   "repository": {
@@ -19,7 +19,9 @@
     "sip",
     "voip",
     "logs",
-    "cdr",
+    "rtp",
+    "rtcp",
+    "qos",
     "sipfix",
     "acme",
     "sbc",

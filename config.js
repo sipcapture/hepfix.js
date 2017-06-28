@@ -1,6 +1,8 @@
 var config = {
   ipfix_config: {
     debug: false,
+    qos: false,
+    sip: true,
     IPFIX_PORT: 4739
   },
   hep_config: {
