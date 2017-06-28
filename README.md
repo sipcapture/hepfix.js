@@ -1,3 +1,5 @@
+<img src="https://i.imgur.com/scqdu3p.png" width="300">
+
 <img src="http://i.imgur.com/MAPMGfe.png" />
 
 # HEPFIX.js
@@ -7,7 +9,7 @@ ORACLE /ACME PACKET Net-Net SBCs features a built in *"Capture Agent"* using a c
 
 #### Status
 * Working prototype w/ HEP support!
-* UDP/TCP Relay, QoS In progress
+* UDP/TCP Relay, RTP/RTCP QoS Reports
 
 #### Install
 ```
