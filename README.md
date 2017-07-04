@@ -55,7 +55,16 @@ comm-monitor
 Configuration can also be performed from the SBC User-Interface:
 <img src="http://i.imgur.com/Mt00OQb.png">
 
-The SBC will send a Handshake packet and start mirroring packets to HEPFIX
+The SBC will send a Handshake packet and start mirroring enabled interface packets to HEPFIX
+
+```
+sh comm-monitor
+ 
+Client                     State                 Protocol
+===========================================================
+192.168.122.1:4739         Connected             TCP      
+
+```
 
 ------------------------------
 
