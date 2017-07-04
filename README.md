@@ -63,6 +63,22 @@ The SBC will send a Handshake packet and start mirroring packets to HEPFIX
 
 ------------------------------
 
+### Types
+|Type   |Description   | Support |
+|-- |-- |-- |
+| 256 |Handshake |  x |
+|     |Keep Alive |  x |
+| 258 |SIP UDP Recv Msg Sent |  x |
+| 259 |SIP UDP Send Msg Sent |  x |
+| 260 |SIP TCP Recv Msg Sent |  x |
+| 261 |SIP TCP Send Msg Sent |  x |
+|   |SIP SCTP Recv Msg Sent |   |
+|   |SIP SCTP Send Msg Sent |   |
+|   |ENUM Recv Msg Sent |   |
+|   |ENUM Send Msg Sent |   |
+| 268 |QOS RTP/RTCP | x |
+
+
 ### To-DO
 * TEST, TEST, TEST!
 * Convert QoS Reports to RTPAgent reports
