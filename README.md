@@ -7,6 +7,9 @@
 
 ORACLE /ACME PACKET Net-Net SBCs features a built in *"Capture Agent"* using a custom IPFIX template to export SIP messages and Statistics in realtime from the core. **HEPFIX** converts IPFIX to HEP for [HOMER](http://sipcapture.org) and [HEPIC](http://hepic.tel) without requiring port mirroring and switches/probes/agents.
 
+# NOTE
+This is a port! For production please use [horaclifix](http://github.com/negbie/horaclifix)
+
 #### Status
 * Working prototype w/ HEP support!
 * UDP/TCP Relay, RTP/RTCP QoS Reports
