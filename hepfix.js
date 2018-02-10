@@ -7,8 +7,7 @@
 */
 
 var net = require('net');
-var sipfix = require('./sipfix.js')
-var qosfix = require('./qosfix.js')
+var sipfix = require('sipfix')
 
 console.log("Press CTRL-C to Exit...");
 
@@ -215,14 +214,14 @@ var fixHandler = function(data,socket){
 				MOSit( { CallID: qos.IncCallID }, qos.IncMos );
 				MOSit( { CallID: qos.OutCallID }, qos.OutMos );
 
-				if (debug) console.log('RTP-INC',qosfix.getPayloadIncRTP(qos));
-				QOSit(qosfix.getPayloadIncRTP(qos) );
-				if (debug) console.log('RTP-OUT',qosfix.getPayloadOutRTP(qos));
-				QOSit(qosfix.getPayloadOutRTP(qos) );
-				if (debug) console.log('RTCP-INC',qosfix.getPayloadIncRTCP(qos));
-				QOSit(qosfix.getPayloadIncRTCP(qos) );
-				if (debug) console.log('RTCP-OUT',qosfix.getPayloadOutRTCP(qos));
-				QOSit(qosfix.getPayloadOutRTCP(qos) );
+				if (debug) console.log('RTP-INC',sipfix.getPayloadIncRTP(qos));
+				QOSit(sipfix.getPayloadIncRTP(qos) );
+				if (debug) console.log('RTP-OUT',sipfix.getPayloadOutRTP(qos));
+				QOSit(sipfix.getPayloadOutRTP(qos) );
+				if (debug) console.log('RTCP-INC',sipfix.getPayloadIncRTCP(qos));
+				QOSit(sipfix.getPayloadIncRTCP(qos) );
+				if (debug) console.log('RTCP-OUT',sipfix.getPayloadOutRTCP(qos));
+				QOSit(sipfix.getPayloadOutRTCP(qos) );
 
 
 

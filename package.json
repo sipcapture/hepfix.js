@@ -1,6 +1,6 @@
 {
   "name": "hepfix.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "HEP/HOMER IPFIX hooks for ACME Packet / Oracle SBC",
   "main": "hepfix.js",
   "repository": {
@@ -27,11 +27,14 @@
     "sbc",
     "oracle"
   ],
-  "scripts": { "start": "nodejs hepfix.js" },
+  "scripts": {
+    "start": "nodejs hepfix.js"
+  },
   "author": "Lorenzo Mangani <lorenzo.mangani@gmail.com> (http://sipcapture.org/)",
   "license": "MIT",
   "dependencies": {
+    "hep-js": "*",
     "restructure": "*",
-    "hep-js": "*"
+    "sipfix": "^1.0.1"
   }
 }
