@@ -72,7 +72,7 @@ var fixHandler = function(data,socket){
 			if (debug) console.log('258: MULTI-MESSAGE');
 			if (debug) console.log("Header length: "+result.Length+" < Packet length: "+dlen);
 
-			var sip = sipfix.SipOut( data.slice(0,result.Length));
+			var sip = sipfix.SipIn( data.slice(0,result.Length));
 			if (sip) {
 				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
 				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
