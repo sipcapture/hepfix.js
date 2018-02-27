@@ -5,10 +5,7 @@
 # HEPFIX.js
 **IPFIX** to **HEP/EEP**  adapter for *Oracle / ACME Packet Net-Net SBCs*
 
-ORACLE /ACME PACKET Net-Net SBCs features a built in *"Capture Agent"* using a custom IPFIX template to export SIP messages and Statistics in realtime from the core. **HEPFIX** converts IPFIX to HEP for [HOMER](http://sipcapture.org) and [HEPIC](http://hepic.tel) without requiring port mirroring and switches/probes/agents.
-
-# NOTE
-This is a port! For production please use [horaclifix](http://github.com/negbie/horaclifix)
+ORACLE / ACME PACKET Net-Net SBCs features a built in *"Capture Agent"* using a custom IPFIX template to export SIP messages and Statistics in realtime from the core. **HEPFIX** handles and converts IPFIX binary formats to HEP equivalents for using with [HOMER](http://sipcapture.org) and [HEPIC](http://hepic.tel) without requiring port mirroring and switches/probes/agents.
 
 #### Status
 * Working prototype w/ HEP support!
@@ -68,6 +65,7 @@ Client                     State                 Protocol
 192.168.122.1:4739         Connected             TCP      
 
 ```
+###### WARNING: AN SBC REBOOT/SWITCHOVER MIGHT BE REQUIRED IF FIRST TIME USAGE SHOWS NO HANDSHAKES
 
 ------------------------------
 
@@ -102,4 +100,6 @@ Core Structures and GO version seeded by [Negbie](https://github.com/negbie) and
 ### LEGAL
 This software is provided as-is and without any warranty what-so-ever. See LICENSE for license details.
 
-HEPFIX is an independent implementation of an IPFIX template. HEPIX is not related, affiliated to or endorsed by ORACLE Communications in any way or form. ACME PACKET is a trademark of ORACLE Communications. All material rights reserved by their respective owners and not claimed by the author. 
+HEPFIX is an independent implementation of a generic IPFIX template with custom types based on open standards and definitions. HEPIX is not related, affiliated to or endorsed by ORACLE Communications in any way, form or shape. 
+
+ACME PACKET, PALLADION, OCOM are a trademarks of ORACLE Communications. All material rights reserved by their respective owners and not claimed by the author. 
