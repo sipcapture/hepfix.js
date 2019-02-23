@@ -1,7 +1,5 @@
 /* *****************************
 	HEPFIX.JS
-	(C) 2017 QXIP BV
-	(C) 2017 L. Mangani <lorenzo.mangani@gmail.com>
 	Structures Based on negbie/horaclifix
    *****************************
 */
@@ -33,10 +31,6 @@ if (config.ipfix_config) {
   exit;
 }
 
-
-// TEST:
-// echo -ne '\x00\x0A\x00\x30\x59\x41\x37\x38\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x20\x00\x01\x00\x02\x00\xFC\x77\x31\x00\x00\x00\x1E\x00\x00\x00\x00\x43\x5A\x07\x03\x00\x06\x65\x63\x7A\x37\x33\x30' | nc localhost 4739
-
 // HEP Handler
 var HEPit = function(message){
 	// Form and Send IPFIX JSON as HEP
@@ -55,10 +49,15 @@ var MOSit = function(message,mos){
 
 // IPFIX Type Handler
 var fixHandler = function(data,socket){
+   try {
 	var dlen = data.byteLength;
 	//var dlen = data.length;
 	// Determine IPFIX Type
 	var result = sipfix.readHeader(data);
+	if(!result||!result.SetID){
+		if (debug) console.error('UNDECODED MESSAGE: ',data);
+		return;
+	}
 	if (result.SetID == 256) {
 		if (debug) console.log('GOT HANDSHAKE ID: ',result.SetID);
 		var shake = sipfix.readHandshake(data);
@@ -127,7 +126,6 @@ var fixHandler = function(data,socket){
 		   	}
 			return;
 		}
-
 
 	/* TCP */
 	} else if (result.SetID === 260) {
@@ -222,15 +220,14 @@ var fixHandler = function(data,socket){
 				QOSit(sipfix.getPayloadIncRTCP(qos) );
 				if (debug) console.log('RTCP-OUT',sipfix.getPayloadOutRTCP(qos));
 				QOSit(sipfix.getPayloadOutRTCP(qos) );
-
-
-
 			}
 			return;
 	} else {
 		if (debug) console.log('Invalid/Unsupported Type: ',result.setID );
 			return;
 	}
+	   
+   } catch(e){ if (debug) console.error(e) }
 
 };
 
