@@ -1,6 +1,6 @@
 {
   "name": "hepfix.js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "HEP/HOMER IPFIX hooks for ACME Packet / Oracle SBC",
   "main": "hepfix.js",
   "repository": {
