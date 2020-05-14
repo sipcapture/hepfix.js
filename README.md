@@ -100,6 +100,6 @@ Core Structures and GO version seeded by [Negbie](https://github.com/negbie) and
 ### LEGAL
 This software is provided as-is and without any warranty what-so-ever. See LICENSE for license details.
 
-HEPFIX is an independent implementation of a generic IPFIX template with custom types based on open standards and definitions. HEPIX is not related, affiliated to or endorsed by ORACLE Communications in any way, form or shape. 
+HEPFIX is an independent implementation of a generic IPFIX template with custom types based on open standards and definitions and permitted by EU Directive 2009/24/EC. HEPIX is not related, affiliated to or endorsed by ORACLE Communications in any way, form or shape. 
 
 ACME PACKET, PALLADION, OCOM are a trademarks of ORACLE Communications. All material rights reserved by their respective owners and not claimed by the author. 
