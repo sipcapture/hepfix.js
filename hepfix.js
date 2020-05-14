@@ -191,13 +191,10 @@ var fixHandler = function(data,socket){
 
 	/* QOS */
 	} else if (result.SetID === 268) {
-		if (dlen > result.Length ) {
-			if (debug) console.log('268: QOS MULTI-MESSAGE ??');
-		}
 
 			//QoS Reports
 			if (debug) console.log('268: QOS REPORT');
-			var qos = sipfix.StatsQos(data);
+			var qos = sipfix.StatsQos(data.slice(0,result.Length));
 			if (qos) {
 				qos.CallerIncSrcIP = Array.prototype.join.call(qos.CallerIncSrcIP, '.');
 				qos.CallerIncDstIP = Array.prototype.join.call(qos.CallerIncDstIP, '.');
@@ -220,6 +217,12 @@ var fixHandler = function(data,socket){
 				QOSit(sipfix.getPayloadIncRTCP(qos) );
 				if (debug) console.log('RTCP-OUT',sipfix.getPayloadOutRTCP(qos));
 				QOSit(sipfix.getPayloadOutRTCP(qos) );
+			}
+		
+			if (dlen > result.Length ) {
+				if (debug) console.log('268: QOS MULTI-MESSAGE TRY NEXT');
+				// Process Next
+				fixHandler(data.slice(result.Length,data.length));
 			}
 			return;
 	} else {
