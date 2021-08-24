@@ -4,7 +4,7 @@
   "description": "HEP/HOMER IPFIX hooks for ACME Packet / Oracle SBC",
   "main": "hepfix.js",
   "bin": {
-    "hepfix.js": "./hepfix.js",
+    "hepfix.js": "./hepfix.js"
   },
   "repository": {
     "type": "git",
