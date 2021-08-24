@@ -1,8 +1,11 @@
 {
   "name": "hepfix.js",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "HEP/HOMER IPFIX hooks for ACME Packet / Oracle SBC",
   "main": "hepfix.js",
+  "bin": {
+    "hepfix.js": "./hepfix.js",
+  },
   "repository": {
     "type": "git",
     "url": "http://github.com/sipcapture/hepfix.js"

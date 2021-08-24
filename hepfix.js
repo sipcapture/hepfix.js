@@ -1,7 +1,10 @@
-/* *****************************
-	HEPFIX.JS
-	Structures Based on negbie/horaclifix
-   *****************************
+#!/usr/bin/env node
+
+/*
+  *****************************
+  HEPFIX.JS
+  Structures Based on negbie/horaclifix
+  *****************************
 */
 
 var net = require('net');
@@ -12,6 +15,7 @@ console.log("Press CTRL-C to Exit...");
 var config = require('./config.js');
 if (config.ipfix_config) {
 	var debug = config.ipfix_config.debug;
+	var cacheSize = config.ipfix_config.cacheMax || 4000;
 }
 
 if (config.hep_config) {
@@ -47,15 +51,28 @@ var MOSit = function(message,mos){
 	hep_client.preHep( hep_client.rcmos(message,mos) );
 };
 
+// BUFFER
+var buffer = false;
+
 // IPFIX Type Handler
 var fixHandler = function(data,socket){
    try {
 	var dlen = data.byteLength;
-	//var dlen = data.length;
 	// Determine IPFIX Type
 	var result = sipfix.readHeader(data);
 	if(!result||!result.SetID){
 		if (debug) console.error('UNDECODED MESSAGE: ',data);
+		if (!buffer) {
+			buffer = data;
+			if (debug) console.error('FRAGMENT BUFFERED!');
+		} else if (buffer && Buffer.byteLength(buffer) < cacheMax) {
+			if (debug) console.error('FRAGMENT RECOVERY!');
+			fixHandler(Buffer.concat([buffer, data]), socket);
+			buffer = false;
+		} else {
+			if (debug) console.error('FRAGMENT RESET!');
+			buffer = false;
+		}
 		return;
 	}
 	if (result.SetID == 256) {
@@ -218,7 +235,7 @@ var fixHandler = function(data,socket){
 				if (debug) console.log('RTCP-OUT',sipfix.getPayloadOutRTCP(qos));
 				QOSit(sipfix.getPayloadOutRTCP(qos) );
 			}
-		
+
 			if (dlen > result.Length ) {
 				if (debug) console.log('268: QOS MULTI-MESSAGE TRY NEXT');
 				// Process Next
@@ -227,9 +244,9 @@ var fixHandler = function(data,socket){
 			return;
 	} else {
 		if (debug) console.log('Invalid/Unsupported Type: ',result.setID );
-			return;
+		return;
 	}
-	   
+
    } catch(e){ if (debug) console.error(e) }
 
 };
