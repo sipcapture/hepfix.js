@@ -15,7 +15,7 @@ console.log("Press CTRL-C to Exit...");
 var config = require('./config.js');
 if (config.ipfix_config) {
 	var debug = config.ipfix_config.debug;
-	var cacheSize = config.ipfix_config.cacheMax || 4000;
+	var cacheMax = config.ipfix_config.cacheMax || 4000;
 }
 
 if (config.hep_config) {
@@ -97,7 +97,8 @@ var fixHandler = function(data,socket){
 			}
 
 			// Process Next
-			fixHandler(data.slice(result.Length,data.length));
+			buffer = data.slice(result.Length,data.length);
+			//fixHandler(data.slice(result.Length,data.length));
 			return;
 
 		} else {
@@ -126,21 +127,23 @@ var fixHandler = function(data,socket){
 			}
 
 			// Process Next
-			fixHandler(data.slice(result.Length,data.length));
+			buffer = data.slice(result.Length,data.length);
+			//fixHandler(data.slice(result.Length,data.length));
 			return;
-		} else {
-
+		} else if (dlen < result.Length ) {
 			if (debug) console.log('259: SINGLE-MESSAGE');
-			//var sip = sipfix.SipIn(data);
+			if (debug) console.log("Header length: "+result.Length+" < Packet length: "+dlen);
 			var sip = sipfix.SipOut(data);
 			if (sip) {
-				if (debug) console.log(sip);
 				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
 				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
 
 				if (debug) console.log(sip.SipMsg.toString() );
 				HEPit(sip);
 		   	}
+			return;
+		} else {
+			buffer = data;
 			return;
 		}
 
@@ -159,11 +162,14 @@ var fixHandler = function(data,socket){
 			}
 
 			// Process Next
-			fixHandler(data.slice(result.Length,data.length));
+			buffer = data.slice(result.Length,data.length);
+			//fixHandler(data.slice(result.Length,data.length));
 			return;
 
 		} else {
 			if (debug) console.log('260-TCP: SINGLE-MESSAGE');
+			if (debug) console.log("Header length: "+result.Length+" < Packet length: "+dlen);
+
 			var sip = sipfix.SipInTCP(data);
 			if (sip) {
 				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
@@ -188,7 +194,8 @@ var fixHandler = function(data,socket){
 			}
 
 			// Process Next
-			fixHandler(data.slice(result.Length,data.length));
+			buffer = data.slice(result.Length,data.length);
+			//fixHandler(data.slice(result.Length,data.length));
 			return;
 		} else {
 
@@ -196,7 +203,6 @@ var fixHandler = function(data,socket){
 			//var sip = sipfix.SipIn(data);
 			var sip = sipfix.SipOutTCP(data);
 			if (sip) {
-				if (debug) console.log(sip);
 				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
 				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
 
@@ -239,7 +245,8 @@ var fixHandler = function(data,socket){
 			if (dlen > result.Length ) {
 				if (debug) console.log('268: QOS MULTI-MESSAGE TRY NEXT');
 				// Process Next
-				fixHandler(data.slice(result.Length,data.length));
+				buffer = data.slice(result.Length,data.length);
+				//fixHandler(data.slice(result.Length,data.length));
 			}
 			return;
 	} else {
