@@ -37,7 +37,7 @@
   "license": "MIT",
   "dependencies": {
     "hep-js": "^1.0.10",
-    "restructure": "^0.5.4",
+    "restructure": "2.0.1",
     "sipfix": "^1.0.2"
   }
 }
