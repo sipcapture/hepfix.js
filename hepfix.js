@@ -57,24 +57,30 @@ var buffer = false;
 // IPFIX Type Handler
 var fixHandler = function(data,socket){
    try {
+	if (buffer) {
+		data = Buffer.concat([buffer, data]);
+		buffer = false;
+	}
 	var dlen = data.byteLength;
 	// Determine IPFIX Type
 	var result = sipfix.readHeader(data);
 	if(!result||!result.SetID){
 		if (debug) console.error('UNDECODED MESSAGE: ',data);
-		if (!buffer) {
+		if (Buffer.byteLength(data) < cacheMax) {
 			buffer = data;
 			if (debug) console.error('FRAGMENT BUFFERED!');
-		} else if (buffer && Buffer.byteLength(buffer) < cacheMax) {
-			if (debug) console.error('FRAGMENT RECOVERY!');
-			fixHandler(Buffer.concat([buffer, data]), socket);
-			buffer = false;
 		} else {
 			if (debug) console.error('FRAGMENT RESET!');
 			buffer = false;
 		}
 		return;
 	}
+
+	var processRemaining = function(remainder) {
+		if (remainder && remainder.length) {
+			fixHandler(remainder, socket);
+		}
+	};
 	if (result.SetID == 256) {
 		if (debug) console.log('GOT HANDSHAKE ID: ',result.SetID);
 		var shake = sipfix.readHandshake(data);
@@ -96,11 +102,13 @@ var fixHandler = function(data,socket){
 				HEPit(sip);
 			}
 
-			// Process Next
-			buffer = data.slice(result.Length,data.length);
-			//fixHandler(data.slice(result.Length,data.length));
+			processRemaining(data.slice(result.Length));
 			return;
 
+		} else if (dlen < result.Length) {
+			buffer = data;
+			if (debug) console.error('258: FRAGMENT BUFFERED!');
+			return;
 		} else {
 			if (debug) console.log('258: SINGLE-MESSAGE');
 			var sip = sipfix.SipIn(data);
@@ -126,24 +134,22 @@ var fixHandler = function(data,socket){
 				HEPit(sip);
 			}
 
-			// Process Next
-			buffer = data.slice(result.Length,data.length);
-			//fixHandler(data.slice(result.Length,data.length));
+			processRemaining(data.slice(result.Length));
 			return;
-		} else if (dlen < result.Length ) {
+		} else if (dlen < result.Length) {
+			buffer = data;
+			if (debug) console.error('259: FRAGMENT BUFFERED!');
+			return;
+		} else {
 			if (debug) console.log('259: SINGLE-MESSAGE');
 			if (debug) console.log("Header length: "+result.Length+" < Packet length: "+dlen);
 			var sip = sipfix.SipOut(data);
 			if (sip) {
 				sip.SrcIP = Array.prototype.join.call(sip.SrcIP, '.');
 				sip.DstIP = Array.prototype.join.call(sip.DstIP, '.');
-
 				if (debug) console.log(sip.SipMsg.toString() );
 				HEPit(sip);
-		   	}
-			return;
-		} else {
-			buffer = data;
+			}
 			return;
 		}
 
@@ -161,11 +167,13 @@ var fixHandler = function(data,socket){
 				HEPit(sip);
 			}
 
-			// Process Next
-			buffer = data.slice(result.Length,data.length);
-			//fixHandler(data.slice(result.Length,data.length));
+			processRemaining(data.slice(result.Length));
 			return;
 
+		} else if (dlen < result.Length) {
+			buffer = data;
+			if (debug) console.error('260-TCP: FRAGMENT BUFFERED!');
+			return;
 		} else {
 			if (debug) console.log('260-TCP: SINGLE-MESSAGE');
 			if (debug) console.log("Header length: "+result.Length+" < Packet length: "+dlen);
@@ -193,9 +201,11 @@ var fixHandler = function(data,socket){
 				HEPit(sip);
 			}
 
-			// Process Next
-			buffer = data.slice(result.Length,data.length);
-			//fixHandler(data.slice(result.Length,data.length));
+			processRemaining(data.slice(result.Length));
+			return;
+		} else if (dlen < result.Length) {
+			buffer = data;
+			if (debug) console.error('261-TCP: FRAGMENT BUFFERED!');
 			return;
 		} else {
 
@@ -244,9 +254,7 @@ var fixHandler = function(data,socket){
 
 			if (dlen > result.Length ) {
 				if (debug) console.log('268: QOS MULTI-MESSAGE TRY NEXT');
-				// Process Next
-				buffer = data.slice(result.Length,data.length);
-				//fixHandler(data.slice(result.Length,data.length));
+				processRemaining(data.slice(result.Length));
 			}
 			return;
 	} else {
